@@ -1,5 +1,17 @@
 --call bronze.load_bronze()
 
+/*
+=============================================================================
+DDL Script: Crete bronze tables
+=============================================================================
+This script creates tables in the bronze schema, dropping existing tables 
+if they already exist
+
+
+*/
+
+
+
 CREATE OR REPLACE PROCEDURE bronze.load_bronze()
 language plpgsql
 as $$
