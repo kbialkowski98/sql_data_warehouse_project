@@ -61,7 +61,7 @@ SELECT
         WHEN 'S' THEN 'Other Sales'
         WHEN 'T' THEN 'Touring'
         ELSE 'Unknown'
-     END prd_line                                               --map product line code to label
+     END prd_line                                               --map product line code to descriptive values
     ,CAST(prd_start_dt AS DATE) prd_start_dt                    --cast to DATE
     ,LEAD(CAST(prd_start_dt AS DATE)) OVER(PARTITION BY prd_key ORDER BY prd_start_dt) - 1 prd_end_dt --cast to DATE and set prd_end_dt to day before next prd_start_dt
 FROM
