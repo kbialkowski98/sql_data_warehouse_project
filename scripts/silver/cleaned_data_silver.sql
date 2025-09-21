@@ -113,6 +113,29 @@ SELECT
 FROM
     bronze.crm_sales_details
 
+--erp_cust_az_12
+INSERT INTO silver.erp_cust_az12 (
+    cid
+    ,bdate
+    ,gen
+)
+
+SELECT
+    CASE
+        WHEN cid LIKE 'NAS%' THEN SUBSTRING(cid,4,LENGTH(cid))      --Remove 'NAS' prefix
+        ELSE cid
+    END cid
+    ,CASE
+        WHEN bdate > CURRENT_DATE THEN NULL                         --Set to NULL if date is in the future
+        ELSE bdate
+     END bdate
+    ,CASE
+        WHEN UPPER(TRIM(gen)) IN ('F', 'FEMALE') THEN 'Female'      --Normalize gender values and handle unknown cases
+        WHEN UPPER(TRIM(gen)) IN ('M', 'MALE') THEN 'Male'
+        ELSE 'Unknown'
+     END gen
+FROM
+    bronze.erp_cust_az12
 
 
 
