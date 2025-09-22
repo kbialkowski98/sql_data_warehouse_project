@@ -1,4 +1,5 @@
 --crm_cust_info
+TRUNCATE TABLE silver.crm_cust_info;
 INSERT INTO silver.crm_cust_info (
      cst_id
     ,cst_key
@@ -34,10 +35,11 @@ FROM
         bronze.crm_cust_info
     )
 WHERE 
-    r = 1                                                           --select most recent record per customer
+    r = 1;                                                           --select most recent record per customer
 
 
 --crm_prd_info
+TRUNCATE TABLE silver.crm_prd_info;
 INSERT INTO silver.crm_prd_info (
     prd_id
     ,cat_id
@@ -65,14 +67,11 @@ SELECT
     ,CAST(prd_start_dt AS DATE) prd_start_dt                    --cast to DATE
     ,LEAD(CAST(prd_start_dt AS DATE)) OVER(PARTITION BY prd_key ORDER BY prd_start_dt) - 1 prd_end_dt --cast to DATE and set prd_end_dt to day before next prd_start_dt
 FROM
-    bronze.crm_prd_info
-
-INSERT INTO silver.crm_sales_details (
-     
-)
+    bronze.crm_prd_info;
 
 
 --crm_sales_details
+TRUNCATE TABLE silver.crm_sales_details;
 INSERT INTO silver.crm_sales_details (
     sls_ord_num
     ,sls_prd_key
@@ -111,9 +110,10 @@ SELECT
         ELSE sls_price
      END sls_price                                                                      --calculate price if orginal value is invalid
 FROM
-    bronze.crm_sales_details
+    bronze.crm_sales_details;
 
 --erp_cust_az_12
+TRUNCATE TABLE silver.erp_cust_az12;
 INSERT INTO silver.erp_cust_az12 (
     cid
     ,bdate
@@ -135,9 +135,10 @@ SELECT
         ELSE 'Unknown'
      END gen
 FROM
-    bronze.erp_cust_az12
+    bronze.erp_cust_az12;
 
 --erp_loc_a101
+TRUNCATE TABLE silver.erp_loc_a101;
 INSERT INTO silver.erp_loc_a101(
     cid
     ,cntry
@@ -150,7 +151,23 @@ SELECT
      WHEN TRIM(cntry) IN ('US', 'USA') THEN 'United States'
      WHEN TRIM(cntry) = '' OR cntry IS NULL THEN 'Unknown'
      ELSE TRIM(cntry)
-     END cntry
+     END cntry                                                       --Normalize and fix missing or black coutry codes
 FROM
-    bronze.erp_loc_a101
+    bronze.erp_loc_a101;
 
+
+--erp_px_cat_g1v2
+TRUNCATE TABLE silver.erp_px_cat_g1v2;
+INSERT INTO silver.erp_px_cat_g1v2(
+    id
+    ,cat
+    ,subcat
+    ,maintenance 
+)
+
+SELECT
+    id
+    ,cat
+    ,subcat
+    ,maintenance 
+FROM bronze.erp_px_cat_g1v2;
